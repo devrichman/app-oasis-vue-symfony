@@ -1,0 +1,59 @@
+.mobile-tab {
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px 0 rgba(115, 112, 114, 0.2);
+  margin-bottom: 2px;
+  &:last-child {
+    margin-bottom: 16px;
+  }
+
+  &--title {
+    line-height: 24px;
+    padding: 12px;
+    cursor: pointer;
+    user-select: none;
+
+    img {
+      $r: 24px;
+      height: $r;
+      width: $r;
+    }
+  }
+
+  &--body {
+    position: relative;
+    padding: 12px 5px;
+    &::before {
+      transform: translateY(-12px);
+      margin: 0 -2px;
+      content: "";
+      display: block;
+      // width: 100%;
+      position: absolute;
+      right: -3px;
+      left: -3px;
+      height: 2px;
+      background-image: linear-gradient(
+        to left,
+        $consultant-light,
+        $consultant_primary
+      );
+    }
+  }
+
+  .nav-title {
+    margin-left: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: $gris_80;
+    line-height: normal;
+  }
+
+  &.active {
+    .nav-title {
+      color: $consultant-light;
+    }
+  }
+}

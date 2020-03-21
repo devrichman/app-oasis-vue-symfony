@@ -1,0 +1,121 @@
+.iziToast {
+  background-color: white !important;
+  margin-right: 30px !important;
+  border-radius: 8px;
+  padding: 10px 10px;
+  padding-right: 30px;
+  box-shadow: 0 4px 8px 0 rgba(115, 112, 114, 0.2);
+  right: 0;
+  position: absolute;
+
+
+  &:after{
+      display: none;
+  }
+
+  button.iziToast-close {
+    border-radius: 50%;
+    $r: 40px;
+    height: $r;
+    width: $r;
+    line-height: $r;
+    text-align: center;
+    font-size: 20px;
+    color: $gris_80;
+    box-shadow: 0 4px 8px 0 rgba(115, 112, 114, 0.2);
+    background-image: none;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    &::after {
+      content: "";
+      display: block;
+      $r: 32px;
+      height: $r;
+      width: $r;
+      background-image: url("../assets/img/croix.svg");
+      background-position: center;
+      background-size: 21px;
+      background-repeat: no-repeat;
+    }
+
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateX(50%) translateY(-50%);
+    opacity: 1 !important;
+  }
+
+  .iziToast-body {
+      display: flex;
+      padding-left: 10px !important;
+      padding: 10px;
+      margin-left: 0;
+      align-items: center;
+    .iziToast-texts {
+      display: flex !important;
+      flex-direction: column;
+      margin-top: 0vw;
+    }
+
+    .iziToast-icon{
+        $r: 50px;
+        height: $r;
+        width: $r;
+        position: static;
+        margin-right: 12px;
+        margin-top: 0;
+        background-size: 100%;
+        background-position: center;
+        &.ico-error{
+            background-image: url('../assets/img/error.svg');
+        }
+        &.ico-success{
+            background-image: url('../assets/img/validation.svg');
+        }
+    }
+  }
+
+  .iziToast-texts {
+    .iziToast-title,
+    .iziToast-message {
+      font-weight: bold !important;
+      @include font-1;
+    }
+    .iziToast-title {
+      font-size: 14px;
+      text-transform: uppercase;
+    }
+    .iziToast-message {
+      margin-top: 5px;
+      margin-bottom: 0;
+      font-size: 12px;
+      color: $gris_44;
+    }
+  }
+}
+
+.iziToast-color {
+  &-red {
+    .iziToast-texts {
+      .iziToast-title {
+        color: $rouge !important;
+      }
+    }
+  }
+  &-green {
+    .iziToast-texts {
+      .iziToast-title {
+        color: $vert !important;
+      }
+    }
+  }
+}
+
+@include breakpoint-min(480px){
+  .iziToast{
+    width: 90%;
+    left: 5%;
+    top: 10px;
+  }
+}

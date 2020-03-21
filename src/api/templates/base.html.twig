@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        {% block stylesheets %}{% endblock %}
+    </head>
+    <body class="wrapper">
+        <header class="header">
+            <img src="{{ logo }}" alt="">
+        </header>
+
+        <div class="wrapper_content">
+            <div class="content col-md-8 offset-md-2">
+                {% block body %}{% endblock %}
+            </div>
+        </div>
+        
+        <footer>
+            <div class="container_social row col-md-4 offset-md-4 justify-content-center">
+                {% if site_oasis_link %}
+                    <a class="icon_link" href="{{ site_oasis_link }}">
+                        <img src="{{ website }}" alt="">
+                    </a>
+                {% endif %}
+                {% if linkedin_link %}
+                    <a class="icon_link" href="{{ linkedin_link }}">
+                        <img src="{{ linkedin }}" alt="">
+                    </a>
+                {% endif %}
+                {% if twitter_link %}
+                    <a href="{{ twitter_link }}">
+                        <img src="{{ twitter }}" alt="">
+                    </a>
+                {% endif %}
+            </div>
+        </footer>
+
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>
+
+<style>
+    body {
+        margin: 0;
+    }
+
+    .container_social a {
+        margin-right: 18px;
+    }
+
+    .icon_link {
+        border: 2px solid #999;
+        border-radius: 30px;
+        padding: 5px 8px;
+    }
+
+
+    .icon_link img
+    {
+        width: 19px;
+        height: 19px;
+    }
+
+    .container_social a:last-child {
+        margin-right: 0;
+    }
+
+    header
+    {
+        text-align: center;
+        padding: 24px;
+    }
+
+    footer
+    {
+        width: 100%;
+        padding: 16px;
+        background-color: #F5F7FA;
+    }
+
+    .wrapper
+    {
+        background-image: url({{ background_image_purple }});
+        background-size: 100%;
+        overflow: auto;
+    }
+
+    .wrapper_content
+    {
+        background-image: url({{ background_image_gray }});
+        background-size: cover;
+        min-height: 500px;
+        background-repeat: no-repeat;
+        padding: 100px 50px 50px;
+    }
+
+    .btn-white-primary
+    {
+        font-weight: bold;
+        color: #b837b3;
+        box-shadow: 0 4px 16px 0  rgba(173,69,168,.2);
+        background-image: -webkit-gradient(linear,left top,left bottom,from(#fff),to(#fff));
+        background-image: linear-gradient(#fff, #fff);
+        -webkit-transition: all .23s ease;
+        transition: all .23s ease;
+    }
+
+    .btn-white-primary:hover {
+        color: white;
+        background-image: linear-gradient(261deg, #b837b3, #7f267b);
+    }
+
+</style>

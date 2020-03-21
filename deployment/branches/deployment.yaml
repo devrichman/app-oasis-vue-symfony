@@ -1,0 +1,284 @@
+---
+apiVersion: "extensions/v1beta1"
+kind: Ingress
+metadata:
+  name: ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: web-static-ip
+    nginx.ingress.kubernetes.io/proxy-body-size: 1024m
+spec:
+  rules:
+    - host: #ENVIRONMENT#.phpmyadmin.oasys.test.thecodingmachine.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: phpmyadmin
+              servicePort: 80
+    - host: #ENVIRONMENT#.www.oasys.test.thecodingmachine.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: webapp
+              servicePort: 80
+    - host: #ENVIRONMENT#.api.oasys.test.thecodingmachine.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: api
+              servicePort: 80
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mysql-data-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: "extensions/v1beta1"
+kind: "Deployment"
+metadata:
+  name: "mysql"
+  labels:
+    app: "mysql"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "mysql"
+  template:
+    metadata:
+      labels:
+        app: "mysql"
+    spec:
+      containers:
+        - name: "mysql"
+          image: "mysql:8.0"
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: mysql-secrets
+                optional: false
+          args:
+            - --max_allowed_packet=512M
+            - --default-authentication-plugin=mysql_native_password
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: mysql-data-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "mysql"
+spec:
+  selector:
+    app: "mysql"
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: 3306
+---
+apiVersion: v1
+stringData:
+  MYSQL_ROOT_PASSWORD: "admin"
+  MYSQL_DATABASE: "oasys"
+  MYSQL_USER: "oasys"
+  MYSQL_PASSWORD: "secret"
+kind: Secret
+metadata:
+  name: mysql-secrets
+type: Opaque
+---
+apiVersion: "extensions/v1beta1"
+kind: "Deployment"
+metadata:
+  name: "phpmyadmin"
+  labels:
+    app: "phpmyadmin"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "phpmyadmin"
+  template:
+    metadata:
+      labels:
+        app: "phpmyadmin"
+    spec:
+      containers:
+        - name: "phpmyadmin"
+          image: "phpmyadmin/phpmyadmin:4.8"
+          env:
+            - name: PMA_HOST
+              value: mysql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "phpmyadmin"
+spec:
+  selector:
+    app: "phpmyadmin"
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+---
+apiVersion: "extensions/v1beta1"
+kind: "Deployment"
+metadata:
+  name: "api"
+  labels:
+    app: "api"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "api"
+  template:
+    metadata:
+      labels:
+        app: "api"
+    spec:
+      initContainers:
+        - name: init-myservice
+          image: busybox
+          command: ['sh', '-c', 'until nslookup mysql; do echo waiting for mysql; sleep 2; done;']
+      containers:
+        - name: "api"
+          image: "git.thecodingmachine.com:444/tcm-projects/oasys/api:#ENVIRONMENT#"
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: app-secrets
+                optional: false
+          env:
+            - name: PHP_INI_MEMORY_LIMIT
+              value: "1G"
+            - name: APACHE_DOCUMENT_ROOT
+              value: "public/"
+            - name: PHP_INI_UPLOAD_MAX_FILESIZE
+              value: "10M"
+            - name: APP_SECRET
+              value: "e41fa453a1952906e31be35bf24f2e94"
+            - name: DATABASE_URL
+              value: "mysql://oasys:secret@mysql:3306/oasys"
+            - name: STARTUP_COMMAND_1
+              value: "php bin/console doctrine:migrations:migrate -n"
+            - name: STARTUP_COMMAND_2
+              value: "php bin/console users:create-super-admin"
+            - name : ROOT_PATH
+              value : "/var/www/html/"
+            - name : CORS_ALLOW_ORIGIN
+              value : "*"
+            - name : MAILER_URL
+              value : "smtp://smtp.mailtrap.io:2525?encryption=tls&auth_mode=login&username=16cfe81b388c9e&password=da1b34c3024504"
+            - name : MAILER_FROM
+              value : "s.gouider@thecodingmachine.com"
+            - name : API_SUPER_ADMIN_FIRST_NAME
+              value : "Soumaya"
+            - name : API_SUPER_ADMIN_LAST_NAME
+              value : "GOUIDER"
+            - name : API_SUPER_ADMIN_EMAIL
+              value : "s.gouider@thecodingmachine.com"
+            - name : API_SUPER_ADMIN_PASSWORD
+              value :  "Secret93"
+            - name : API_SUPER_ADMIN_PHONE
+              value : "0783883296"
+            - name : HOST_URL
+              value : "#ENVIRONMENT#.www.oasys.test.thecodingmachine.com/"
+            - name : HOST_PROTOCOL
+              value : "http"
+            - name : LINKEDIN_LINK
+              value : "https://linkedin"
+            - name : SITE_OASYS_LINK
+              value : "https://oasys.fr/"
+            - name : TWITTER_LINK
+              value : "https://twitter"
+            - name : MODEL_IMPORT_NAME
+              value : "modele_import_utilisateurs.xlsx"
+      imagePullSecrets:
+        - name: "tcmregistry"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "api"
+spec:
+  selector:
+    app: "api"
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+---
+apiVersion: v1
+stringData:
+  SECRET: "7aCkyNJSYZf6Jo6adqtI"
+  DB_NAME: "oasys"
+  DB_USERNAME: "oasys"
+  DB_PASSWORD: "secret"
+  DB_TYPE: "mysql"
+  DB_HOST: "mysql"
+  DB_PORT: "3306"
+kind: Secret
+metadata:
+  name: app-secrets
+type: Opaque
+---
+apiVersion: "extensions/v1beta1"
+kind: "Deployment"
+metadata:
+  name: "webapp"
+  labels:
+    app: "webapp"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "webapp"
+  template:
+    metadata:
+      labels:
+        app: "webapp"
+    spec:
+      initContainers:
+        - name: init-myservice
+          image: busybox
+          command: ['sh', '-c', 'until nslookup mysql; do echo waiting for mysql; sleep 2; done;']
+      containers:
+        - name: "webapp"
+          image: "git.thecodingmachine.com:444/tcm-projects/oasys/webapp:#ENVIRONMENT#"
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: app-secrets
+                optional: false
+          env:
+            - name : APACHE_DOCUMENT_ROOT
+              value: "dist/"
+      imagePullSecrets:
+        - name: "tcmregistry"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "webapp"
+spec:
+  selector:
+    app: "webapp"
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  type: ClusterIP

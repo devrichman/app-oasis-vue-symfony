@@ -1,0 +1,53 @@
+.custom-modal{
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: block;
+    @include hide;
+    transition: all .22s ease;
+    z-index: 1000;
+    
+    &--wrap,&--backdrop{
+        position: fixed;
+    }
+
+    &--wrap{
+        width: 100%;
+        z-index: 999;
+        bottom: 0;
+        padding: 16px;
+        transition: transform .12s ease;
+        transform: translateY(120%);
+    }
+
+    &--footer,&--title{
+        padding: 1.5rem;
+    }
+
+    &--backdrop{
+        background: rgba(#000,.8);
+        top: 0;
+        width:100%;
+        height: 100%;
+        left: 0;
+        content: '';
+        z-index: 200;
+    }
+
+    &.active{
+        .custom-modal--wrap{
+            transform: translateY(0);
+        }
+        @include show;
+    }
+}
+
+@include breakpoint-min{
+    .custom-modal{
+        &--footer,&--title{
+            padding: .25rem;
+        }
+    }
+}

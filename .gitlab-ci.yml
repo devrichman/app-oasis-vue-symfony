@@ -1,0 +1,153 @@
+stages:
+  - test
+  - build
+  - deploy
+  - cleanup
+test_api:
+  image: thecodingmachine/php:7.4-v3-cli
+  stage: test
+  services:
+    - name: mysql:8
+      alias: mysql_tests
+      command: ["--default-authentication-plugin=mysql_native_password"]
+  variables:
+    # Docker PHP image
+    PHP_EXTENSION_XDEBUG: "1"
+    PHP_EXTENSION_GD: "1"
+    PHP_INI_MEMORY_LIMIT: "1G"
+    # Docker MySQL image (should be the same as "mysql_tests" service in docker-compose.yml)
+    MYSQL_ROOT_PASSWORD: "admin"
+    MYSQL_DATABASE: "tests"
+    MYSQL_USER: "tests"
+    MYSQL_PASSWORD: "secret"
+    # Symfony
+    APP_ENV: "test"
+    APP_SECRET: "8d2a5c935d8ef1c0e2b751147382bc75"
+    DATABASE_URL: "mysql://db_user:db_password@127.0.0.1:3306/db_name"
+    TEST_DATABASE_URL: "mysql://tests:secret@mysql_tests/tests"
+    ROOT_PATH: "/builds/tcm-projects/oasys/src/api/"
+    # E-mail
+    MAILER_URL: "smtp://smtp.mailtrap.io:2525?encryption=tls&auth_mode=login&username=16cfe81b388c9e&password=da1b34c3024504"
+    MAILER_FROM: "s.gouider@thecodingmachine.com"
+    HOST_URL: "oasys.localhost/#/"
+    HOST_PROTOCOL: "http"
+
+    # Mail variables
+    SITE_OASYS_LINK: "https://oasys.fr/"
+    LINKEDIN_LINK: "https://www.linkedin.com/company/oasys-consultants/"
+    TWITTER_LINK: "https://twitter.com/OASYSConsultant/"
+  before_script:
+    - cd src/api
+  script:
+    - composer install
+    - composer analyze
+    - php bin/phpunit --colors=never
+  coverage: '/^\s*Lines:\s*\d+.\d+\%/'
+
+test_webapp:
+  image: thecodingmachine/nodejs:12-apache
+  stage: test
+  variables:
+    # Apollo
+    VUE_APP_GRAPHQL_HTTP: "http://api.oasys.localhost/graphql"
+    # Apache
+    APACHE_DOCUMENT_ROOT: "dist/"
+  before_script:
+    - cd src/webapp
+  script:
+    - npm install
+    - npm run build
+
+.build_push_api_image:
+  stage: build
+  image: docker:git
+  services:
+    - docker:dind
+  variables:
+    DOCKER_DRIVER: "overlay2"
+  before_script:
+    - cd src/api
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN git.thecodingmachine.com:444
+    - docker build -t git.thecodingmachine.com:444/tcm-projects/oasys/api:${CI_COMMIT_REF_SLUG} .
+    - docker push git.thecodingmachine.com:444/tcm-projects/oasys/api:${CI_COMMIT_REF_SLUG}
+  only:
+    - develop
+    - master
+
+.build_push_webapp_image:
+  stage: build
+  image: docker:git
+  services:
+    - docker:dind
+  variables:
+    DOCKER_DRIVER: "overlay2"
+    VUE_APP_GRAPHQL_HTTP: "foo"
+  before_script:
+    - cd src/webapp
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN git.thecodingmachine.com:444
+    - docker build  --build-arg VUE_APP_GRAPHQL_HTTP=${VUE_APP_GRAPHQL_HTTP} -t git.thecodingmachine.com:444/tcm-projects/oasys/webapp:${CI_COMMIT_REF_SLUG} .
+    - docker push git.thecodingmachine.com:444/tcm-projects/oasys/webapp:${CI_COMMIT_REF_SLUG}
+
+build_push_api_image_develop:
+  extends: .build_push_api_image
+  only:
+    - develop
+
+build_push_webapp_image_develop:
+  extends: .build_push_webapp_image
+  variables:
+    VUE_APP_GRAPHQL_HTTP: "http://api.$HOST_URL"
+  only:
+    - develop
+
+deploy_develop:
+  image: lwolf/kubectl_deployer:latest
+  stage: deploy
+  variables:
+    KUBECONFIG: "/root/.kube/config"
+  before_script:
+    - apk update && apk add curl
+    - mkdir ~/.kube
+    - echo "$KUBE_CONFIG" > ~/.kube/config
+    - kubectl create namespace ${CI_PROJECT_PATH_SLUG}-${CI_COMMIT_REF_SLUG} || true
+    - kubectl -n ${CI_PROJECT_PATH_SLUG}-${CI_COMMIT_REF_SLUG} delete all --all
+    - kubectl -n ${CI_PROJECT_PATH_SLUG}-${CI_COMMIT_REF_SLUG} delete secret tcmregistry || true
+    - cd deployment/branches
+  script:
+    - kubectl -n ${CI_PROJECT_PATH_SLUG}-${CI_COMMIT_REF_SLUG} create secret docker-registry tcmregistry --docker-username=ci.gitlab@thecodingmachine.com --docker-password=$CI_PASSWD --docker-server=git.thecodingmachine.com:444 --docker-email=ci.gitlab@thecodingmachine.com
+    - sed -i "s/#ENVIRONMENT#/${CI_COMMIT_REF_SLUG}/g" deployment.yaml
+    - kubectl -n ${CI_PROJECT_PATH_SLUG}-${CI_COMMIT_REF_SLUG} apply -f .
+    - curl "https://bigbro.thecodingmachine.com/gitlab/call/start-environment?projectId=${CI_PROJECT_ID}&commitSha=${CI_COMMIT_SHA}&ref=${CI_COMMIT_REF_NAME}&name=${CI_PROJECT_PATH_SLUG}-${CI_COMMIT_REF_SLUG}"
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    url: https://bigbro.thecodingmachine.com/environment/${CI_PROJECT_PATH_SLUG}-${CI_COMMIT_REF_SLUG}
+    on_stop: cleanup_develop
+  when: manual
+  only:
+    - develop
+
+cleanup_develop:
+  stage: cleanup
+  image: thecodingmachine/gitlab-registry-cleaner:latest
+  variables:
+    KUBECONFIG: "/root/.kube/config"
+    GIT_STRATEGY: "none"
+  before_script:
+    - apk update && apk add curl
+    - mkdir ~/.kube
+    - echo "$KUBE_CONFIG" > ~/.kube/config
+  script:
+    - /delete_image.sh git.thecodingmachine.com:444/tcm-projects/oasys/api:${CI_COMMIT_REF_SLUG}
+    - /delete_image.sh git.thecodingmachine.com:444/tcm-projects/oasys/webapp:${CI_COMMIT_REF_SLUG}
+    - kubectl -n ${CI_PROJECT_PATH_SLUG}-${CI_COMMIT_REF_SLUG} delete all --all
+    - kubectl -n ${CI_PROJECT_PATH_SLUG}-${CI_COMMIT_REF_SLUG} delete secret tcmregistry || true
+    - kubectl delete namespace ${CI_PROJECT_PATH_SLUG}-${CI_COMMIT_REF_SLUG}
+    - curl "https://bigbro.thecodingmachine.com/gitlab/call/stop-environment?projectId=${CI_PROJECT_ID}&commitSha=${CI_COMMIT_SHA}&name=${CI_PROJECT_PATH_SLUG}-${CI_COMMIT_REF_SLUG}"
+  when: manual
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    action: stop
+  only:
+    - develop

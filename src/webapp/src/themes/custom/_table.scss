@@ -1,0 +1,158 @@
+$border: 1px solid $gris_80;
+table.table {
+  &.list-table {
+    th,
+    td {
+      border: none;
+    }
+    th {
+      background: transparent;
+      color: $consultant-light;
+      font-weight: bold;
+      text-transform: uppercase;
+      vertical-align: middle;
+      // line-height: 48px;
+    }
+
+    td {
+      border-top: $border;
+      border-bottom: $border;
+      background: #fff;
+      &:first-child {
+        border-left: $border;
+      }
+
+      &:last-child {
+        border-right: $border;
+      }
+
+      .table-avatar {
+        $r: 35px;
+        height: $r;
+        width: $r;
+        border: 1px solid $consultant-light;
+        border-radius: 50%;
+      }
+    }
+  }
+}
+
+.table.list-table,
+.custom-table-row {
+  .cell {
+    &-status {
+      font-size: 12px;
+      font-weight: bold;
+      border-radius: 14px;
+      padding: 1px 12px;
+      vertical-align: middle;
+
+      &.cell-oui {
+        background: rgba($vert-light, 0.5);
+        color: #56a098;
+      }
+
+      &.cell-non {
+        color: $rouge;
+        background: rgba($rouge-light, 0.5);
+      }
+
+      &.cell-style-3 {
+        background: rgba($jaune-dark, 0.5);
+        color: #8b6600;
+      }
+      &.cell-style-4 {
+        color: #41267f;
+        background: #374eb8;
+      }
+      &.cell-style-5 {
+        background: rgba($vert-light, 0.5);
+        color: #2b7870;
+      }
+      &.cell-style-6,
+      &.cell-undefined {
+        background: rgba($gris_94, 0.5);
+        color: $gris_44;
+      }
+
+      &.cell-tag{
+        color: $gris_44;
+        border: 1px solid currentColor;
+        font-weight: normal;
+        padding-top: 3px;
+      }
+    }
+  }
+}
+
+.table-wrap-sm {
+  display: none;
+}
+
+
+
+@include breakpoint-min {
+  table.table {
+    &.list-table {
+      tr {
+        position: relative;
+      }
+    }
+  }
+  .table-wrap-md{
+    display: none;
+  }
+  .table-wrap-sm {
+    display: block;
+    .custom-table-row {
+      position: relative;
+      display: flex;
+      border: $border;
+      background: #fff;
+      padding: 3px;
+      &:not(:first-child) {
+        border-top: none;
+      }
+
+      .tag-name {
+        color: $consultant-light;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin-top: 8px;
+      }
+
+      &.profile-list {
+        font-size: 12px;
+        padding: 8px;
+
+        span {
+          display: block;
+        }
+      }
+    }
+    .show-actions-list {
+      top: 0;
+      right: 0;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      justify-content: flex-end;
+
+      background-image: linear-gradient(to left, #fff 50%, rgba(#fff, 0.9));
+      @include hide;
+      transition: all 0.2s ease;
+
+      .btn:not(:last-child) {
+        margin-right: 0px;
+        transition: all 0.2s ease 0.1s;
+      }
+
+      &.active {
+        @include show;
+        .btn:not(:last-child) {
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,47 @@
+@mixin hide {
+  visibility: hidden;
+  opacity: 0;
+}
+
+@mixin show {
+  visibility: visible;
+  opacity: 1;
+}
+
+@mixin placeholder() {
+  &::placeholder {
+    @content;
+  }
+  &:-moz-placeholder {
+    @content;
+  }
+  &::-moz-placeholder {
+    @content;
+  }
+  &::-webkit-input-placeholder {
+    @content;
+  }
+  &:-ms-input-placeholder {
+    @content;
+  }
+}
+
+@mixin gradient-bg {
+  background-image: linear-gradient(
+    259deg,
+    $consultant-light,
+    $consultant_primary
+  );
+}
+
+@mixin breakpoint-max($width: 768px) {
+  @media (max-width: #{$width}) {
+    @content;
+  }
+}
+
+@mixin breakpoint-min($width: 768px) {
+  @media (max-width: #{$width}) {
+    @content;
+  }
+}

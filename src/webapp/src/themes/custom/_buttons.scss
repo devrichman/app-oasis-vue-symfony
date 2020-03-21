@@ -1,0 +1,124 @@
+.btn {
+  font-weight: bold;
+
+  .fa {
+    vertical-align: middle;
+    font-size: 20px;
+    margin: 0 5px;
+  }
+
+  &.btn-shadow-primary {
+    box-shadow: 0 4px 16px 0 rgba(173, 69, 168, 0.2);
+  }
+
+  &.btn-90 {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  &.btn-white-primary,
+  &.btn-white-secondary {
+    &.wide:not(.btn-90) {
+      width: 100%;
+    }
+  }
+
+  &.btn-white-primary {
+    color: $consultant-light;
+    box-shadow: 0 4px 16px 0 rgba(173, 69, 168, 0.2);
+    background-image: linear-gradient(white, white);
+    transition: all 0.23s ease;
+    display: block;
+    &:not(.btn-cs) {
+      font-size: 16px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+    }
+    &:hover {
+      color: white;
+      background-image: linear-gradient(
+        261deg,
+        $consultant-light,
+        $consultant-primary
+      );
+    }
+  }
+
+  &.btn-white-secondary {
+    color: $gris_44;
+    border-color: currentColor;
+    &:hover {
+      color: $consultant-light;
+    }
+  }
+
+  &.btn-white-icon {
+    background-color: white;
+    padding: 3px 10px;
+    font-size: 14px;
+    color: $consultant-light;
+    display: inline-flex;
+    align-items: center;
+    img {
+      max-height: 24px;
+      max-width: 24px;
+      margin-right: 5px;
+    }
+  }
+
+  &.btn-search-round {
+    $r: 32px;
+    height: $r;
+    width: $r;
+    padding: 0;
+    border-radius: $r / 2;
+
+    .fa {
+      font-size: 12px;
+    }
+  }
+
+  &.btn-uppercase {
+    font-size: 16px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+  }
+
+  &.btn-icon {
+    img {
+      max-height: 24px;
+      max-width: 24px;
+      margin-right: 5px;
+    }
+  }
+
+  &.btn-gradient-primary {
+    color: white;
+    @include gradient-bg;
+    box-shadow: 0 4px 16px 0 rgba(173, 69, 168, 0.2);
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+
+  &.liste-action-btn {
+    border-radius: 50%;
+    color: $consultant-light;
+    $r: 32px;
+    height: $r;
+    width: $r;
+    background: $gris_94;
+    line-height: $r;
+    padding: 0;
+    text-align: center;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .fa {
+      vertical-align: unset;
+      font-size: 14px;
+    }
+  }
+}

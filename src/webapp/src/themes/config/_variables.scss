@@ -1,0 +1,36 @@
+@import 'colors';
+@import 'fonts';
+
+
+$border-radius: 20px;
+$border-radius-sm: 20px;
+
+
+$theme-colors: (
+    'consultant-light': $consultant-light,
+    'consultant_primary': $consultant_primary,
+    'primary-light': $consultant-light,
+
+    'mobilisation': $mobilisation,
+    'mobilite': $mobilite,
+    'dirigeant': $dirigeant,
+    'carriere': $carriere,
+    'carriere-darker': $carriere-darker,
+    'gris_44': $gris_44,
+    'gris_70': $gris_70,
+    'gris_80': $gris_80,
+    'gris_94': $gris_94,
+    'gris-bg': $gris-bg,
+    'white': $white,
+    'black': $black,
+    'jaune': $jaune,
+    'jaune-dark': $jaune-dark,
+    'azure': $azure,
+    'azure-dark': $azure-dark,
+    'vert': $vert,
+    'vert-light': $vert-light,
+    'rouge': $rouge,
+    'rouge-light': $rouge-light,
+);
+
+$primary: $consultant_primary;

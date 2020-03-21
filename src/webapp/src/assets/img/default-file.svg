@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="85" viewBox="0 0 64 85">
+    <defs>
+        <linearGradient id="prefix__a" x1="100%" x2="0%" y1="50%" y2="50%">
+            <stop offset="0%" stop-color="#AD45A8"/>
+            <stop offset="100%" stop-color="#D67BD3"/>
+        </linearGradient>
+        <linearGradient id="prefix__b" x1="100%" x2="0%" y1="0%" y2="100%">
+            <stop offset="0%" stop-color="#B837B3"/>
+            <stop offset="100%" stop-color="#7F267B"/>
+        </linearGradient>
+    </defs>
+    <g fill="none">
+        <path fill="#FFF" d="M15 0h49v85H0V12.04c4.096-4.524 6.753-7.374 7.97-8.549C9.796 1.728 11 0 15 0z"/>
+        <path stroke="url(#prefix__a)" d="M63.5.5H15c-3.349 0-4.62 1.291-6.065 2.74-.2.201-.405.406-.617.61C7.117 5.01 4.51 7.806.5 12.235V84.5h63V.5z"/>
+        <g fill="url(#prefix__b)" transform="translate(16 27)">
+            <path d="M18.667 13.333H28c1.473 0 2.667 1.194 2.667 2.667 0 1.473-1.194 2.667-2.667 2.667h-9.333V28c0 1.473-1.194 2.667-2.667 2.667-1.473 0-2.667-1.194-2.667-2.667v-9.333H4c-1.473 0-2.667-1.194-2.667-2.667 0-1.473 1.194-2.667 2.667-2.667h9.333V4c0-1.473 1.194-2.667 2.667-2.667 1.473 0 2.667 1.194 2.667 2.667v9.333z"/>
+        </g>
+    </g>
+</svg>

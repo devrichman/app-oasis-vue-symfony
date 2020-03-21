@@ -1,0 +1,174 @@
+.profile {
+  position: relative;
+
+  &-container {
+    width: 80%;
+  }
+
+  &-avatar {
+    position: relative;
+    transform: translateX(50px) translateY(-10px);
+    img {
+      border-radius: 50%;
+      $r: 160px;
+      height: $r;
+      width: $r;
+      border: 1px solid #b837b3;
+    }
+    .avatar-status {
+      content: "";
+      display: block;
+      $r: 20px;
+      height: $r;
+      width: $r;
+      background: $gris_44;
+      border-radius: 50%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  }
+
+  &-details {
+    &--one {
+      .item-detail {
+        display: flex;
+        margin-bottom: 1.5rem;
+      }
+      .section-3 {
+        margin-left: auto;
+      }
+      .section-2 {
+        margin-left: 3rem;
+      }
+    }
+    &--two {
+      .section-1 {
+        border-right: 1px solid $gris_44;
+      }
+    }
+  }
+
+  &-picture {
+    transform: translateX(-2%);
+    img {
+      $r: 160px;
+      height: $r;
+      width: $r;
+      border-radius: 50%;
+    }
+  }
+
+  &-label {
+    color: $consultant-primary;
+    font-size: 18px;
+    font-weight: bold;
+    display: inline-block;
+  }
+
+  &-value {
+    font-size: 21px;
+    padding-left: 5px;
+    line-height: normal;
+  }
+
+  &-name {
+    font-weight: lighter;
+    margin: 0 ;
+    font-size: 48px;
+  }
+
+  &-section-title {
+    display: block;
+    font-size: 21px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin: 16px 0;
+  }
+
+  &-section-content{
+    padding: 1rem;
+  }
+
+  &-contact-tag {
+    padding: 4px 0;
+    img {
+      height: 24px;
+      width: 24px;
+    }
+    span {
+      margin-left: 10px;
+    }
+  }
+
+  &-card {
+    &.form-card {
+      padding: 24px 50px;
+    }
+  }
+}
+
+@include breakpoint-min {
+  .user-box {
+    position: relative;
+    flex-direction: column;
+    margin-top: -48px;
+  }
+  .profile {
+    &-container {
+      width: 100%;
+    }
+
+    &-avatar {
+      // position: absolute;
+      transform: translateX(-50%) translateY(48px);
+      left: 50%;
+      img {
+        $r: 120px;
+        height: $r;
+        width: $r;
+      }
+    }
+
+    &-card.form-card {
+      padding: 12px;
+      padding-top: 3em;
+    }
+
+    &-details {
+      &.row{
+        margin: 0;
+      }
+      &--one {
+        flex-direction: column;
+        .item-detail {
+          margin-bottom: 5px;
+        }
+        .section-2 {
+          margin-left: 0;
+        }
+        .section-3{
+          position: absolute;
+          top: 60px;
+          right: 10%;
+        }
+      }
+
+      &--two {
+        .section-1 {
+          border-right: none;
+          border-bottom: 1px solid $gris_44;
+          margin-bottom: 16px;
+          padding-bottom: 16px;
+        }
+      }
+    }
+
+ 
+
+    &-section-content{
+      padding: 0;
+    }
+  
+  }
+}

@@ -1,0 +1,27 @@
+.filters{
+    .filter-group{
+        display: none;
+        &--l{
+            display: flex;
+        }
+
+        .filters-label {
+            line-height: 40px;
+        }
+    }
+}
+
+@include breakpoint-min(786px){
+    .filters{
+        .filter-group{
+            &--l{
+                display: none;
+            }
+
+            &--sm{
+                display: flex;
+            }
+        }
+    }
+    
+}

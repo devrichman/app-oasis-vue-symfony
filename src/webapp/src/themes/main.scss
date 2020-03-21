@@ -1,0 +1,34 @@
+@import 'config/variables';
+
+@import 'config/fonts/index.css';
+
+@import '~bootstrap/scss/bootstrap';
+
+@import 'config/mixins';
+
+// modules
+@import 'modules/base';
+@import 'modules/typ';
+@import 'modules/elements';
+@import 'modules/icons';
+// @import 'modules/...';
+
+// components
+// @import 'components/...';
+@import 'components/wrappers';
+@import 'components/login';
+@import 'components/scrollbar';
+@import 'components/filters';
+@import 'components/modal';
+@import 'components/mobile-tab';
+
+// views
+@import 'views/user';
+@import 'views/profile';
+@import 'views/program';
+// @import 'views/...';
+
+
+// custom
+// @import 'custom/...';
+@import 'custom/index';

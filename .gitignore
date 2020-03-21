@@ -1,0 +1,10 @@
+/.env
+.idea
+src/webapp/public/robots\.txt
+
+.DS_Store
+
+src/api/.deptrac.cache
+!src/api/public/files/index.php
+src/api/public/files
+/redisinsight

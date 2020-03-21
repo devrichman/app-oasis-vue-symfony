@@ -1,0 +1,49 @@
+.nav {
+  &.custom-nav,
+  &.admin-tabs {
+    border-bottom: 2px solid $gris_80;
+    .nav-item {
+      margin: 0;
+      
+    }
+
+    .nav-link {
+      color: $gris_80;
+      padding: 8px 24px;
+      border-radius: 0;
+      border: none;
+      cursor: pointer;
+      
+      display: flex;
+      align-items: center;
+      
+      span {
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 18px;
+        margin-left: 8px;
+      }
+
+      &.router-link-exact-active,
+      &.active {
+        color: $consultant-light;
+        border-bottom: 2px solid $consultant-light;
+        margin-bottom: -2px;
+        background-color: transparent;
+      }
+    }
+  }
+}
+
+@include breakpoint-min{
+  .nav.admin-tabs{
+    border-bottom: none;
+    .nav-link{
+      border-bottom: 2px solid $gris_80;
+
+      &.router-link-exact-active,&.active{
+        margin-bottom: none;
+      }
+    }
+  }
+}

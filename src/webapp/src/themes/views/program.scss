@@ -1,0 +1,55 @@
+.single-user {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px;
+  cursor: default;
+  & + .single-user {
+    margin-right: 24px;
+  }
+
+  .profile-picture {
+    position: relative;
+    &,
+    .main-profile {
+      $r: 40px;
+      height: $r;
+      width: $r;
+      border-radius: 50%;
+    }
+
+    .delete-icon-wrap {
+      @include gradient-bg;
+      cursor: pointer;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 100% !important;
+      width: 100% !important;
+      @include hide;
+      transition: all 0.25s ease;
+    }
+
+    .delete-icon {
+      height: 30px !important;
+      width: 30px !important;
+    }
+
+    &.deletable {
+      &:hover {
+        .delete-icon-wrap {
+          @include show;
+        }
+      }
+    }
+  }
+
+  .user-name {
+    margin-left: 8px;
+  }
+}
