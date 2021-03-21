@@ -2,7 +2,7 @@
 
 API coverage:
 
-[![coverage report](https://git.thecodingmachine.com/tcm-projects/oasys/badges/develop/coverage.svg)](https://git.thecodingmachine.com/tcm-projects/oasys/commits/develop)
+[![coverage report](https://github.com/richhaho/oasys/badges/develop/coverage.svg)](https://github.com/richhaho/oasys/commits/develop)
 
 ## Setup
 
@@ -12,7 +12,7 @@ API coverage:
 On MacOS and Windows, both are bundled inside the Docker Desktop application.
 - **Using a Linux operating system like Ubuntu is strongly recommended.**
 - On Windows, make sure to use a *bash-like* terminal.
-- Clone the project using `git clone git@git.thecodingmachine.com:tcm-projects/oasys.git` inside
+- Clone the project using `git clone https://github.com/richhaho/oasys` inside
 your working directory.
 
 ### First steps
